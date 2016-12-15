@@ -2,7 +2,7 @@ apply plugin: 'application'
 
 
 dependencies {
-    compile project(':labyrinth-ui')
+    compile project(':labyrinth-core')
 
     // SLF4J
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'

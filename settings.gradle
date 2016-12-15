@@ -1,3 +1,5 @@
 rootProject.name = 'informatik-for-kids'
+
 include 'labyrinth-ui'
+include 'labyrinth-core'
 
