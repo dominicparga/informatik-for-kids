@@ -8,8 +8,8 @@ import labyrinth.core.Labyrinth;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello world");
+        Labyrinth l = new Labyrinth(3, 3);
+        System.out.println(l);
 
-        Labyrinth l = new Labyrinth();
     }
 }
