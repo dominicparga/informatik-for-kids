@@ -1,0 +1,26 @@
+apply plugin: 'application'
+
+
+dependencies {
+    compile project(':inforkids-core')
+}
+
+// handle command line arguments via '-Dexec.args="..."'
+run {
+    if (System.getProperty("exec.args")) {
+        args System.getProperty("exec.args").split()
+    }
+}
+
+
+mainClassName = "inforkids.ui.Main"   // TODO
+
+
+
+// set jar, distribution and application name
+jar.baseName = 'informatik-for-kids'
+distributions.main.baseName = 'informatik-for-kids'
+startScripts.applicationName = 'informatik-for-kids'
+
+applicationDefaultJvmArgs = ['-Xmx3g']
+

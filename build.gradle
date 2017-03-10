@@ -10,6 +10,8 @@ configure(javaProjects()) {
 
     repositories {
         mavenCentral()
+        // use jitpack for github access
+        maven { url 'https://jitpack.io' }
     }
 
     // enable verbose test logging

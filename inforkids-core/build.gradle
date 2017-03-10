@@ -1,0 +1,29 @@
+apply plugin: 'distribution'
+
+
+dependencies {
+    // SLF4J
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.3'
+
+    // use microtrafficsim for utils (e.g. logging)
+    compile 'com.github.sgs-us.microtrafficsim:microtrafficsim-core:master-SNAPSHOT'
+
+    // JOGL
+//    compile group: 'org.jogamp.jogl', name: 'jogl-all-main', version: '2.3.2'
+//    compile group: 'org.jogamp.gluegen', name: 'gluegen-rt-main', version: '2.3.2'
+
+    // JUnit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+distributions {
+    main {
+        baseName = 'inforkids-core'
+        contents {
+            from { '../LICENSE' }
+            from { '../README.md' }
+            from jar
+        }
+    }
+}
