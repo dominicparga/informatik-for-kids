@@ -3,10 +3,8 @@ package labyrinth.vis.style;
 import labyrinth.core.graph.Field;
 import labyrinth.core.player.Player;
 import labyrinth.utils.io.ImageLoader;
-import microtrafficsim.utils.resources.PackagedResource;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 /**
  * @author Dominic Parga Cacheiro
@@ -15,15 +13,17 @@ public class BasicImageStyleSheet implements ImageStyleSheet {
 
     private final Image FIELD_GROUND;
     private final Image FIELD_WALL;
+    private final Image PLAYER;
 
     public BasicImageStyleSheet() {
         FIELD_GROUND = ImageLoader.loadImage(getClass(), "/ground.png");
         FIELD_WALL = ImageLoader.loadImage(getClass(), "/wall.png");
+        PLAYER = ImageLoader.loadImage(getClass(), "/player.png");
     }
 
     @Override
     public Image get(Player player) {
-        return null;
+        return PLAYER;
     }
 
     @Override

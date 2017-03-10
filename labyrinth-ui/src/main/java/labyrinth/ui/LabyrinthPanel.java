@@ -20,7 +20,7 @@ public class LabyrinthPanel extends JPanel {
 
 	public LabyrinthPanel() {
         super(null);
-        setBackground(Color.DARK_GRAY);
+        setBackground(Color.BLACK);
 
         entity = new LabyrinthEntity();
         Labyrinth logic = new BasicLabyrinth(5, 6, "WWWWWW WGGGWW WGGGGW WGWWGW WWWWWW");
