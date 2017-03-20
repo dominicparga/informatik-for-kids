@@ -21,7 +21,7 @@ public class Main {
     }
 
 
-    public static void guiExample() {
+    private static void guiExample() {
 
         SwingUtilities.invokeLater(() -> {
             JFrame window = new JFrame("Informatik für Kinder");
@@ -36,7 +36,7 @@ public class Main {
     }
 
 
-    public static void consoleExample() {
+    private static void consoleExample() {
 
 //        Labyrinth labyrinth = new Labyrinth(5, 5);
         BasicLabyrinth labyrinth = new BasicLabyrinth(5, 5, "WWWWW WGGGW W*WGW WGGGW WWWWW");
@@ -49,5 +49,25 @@ public class Main {
             player.walkRandomSingleMove();
             System.out.println(styleSheet.get(labyrinth, player));
         }
+    }
+
+
+    private static void scrollExample() {
+        SwingUtilities.invokeLater(() -> {
+
+            JFrame frame = new JFrame();
+
+            final JPanel panel = new JPanel();
+            panel.setBorder(BorderFactory.createLineBorder(Color.red));
+            panel.setPreferredSize(new Dimension(800, 600));
+
+            final JScrollPane scroll = new JScrollPane(panel);
+
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+            frame.add(scroll, BorderLayout.CENTER);
+            frame.setSize(300, 300);
+            frame.setVisible(true);
+        });
     }
 }
