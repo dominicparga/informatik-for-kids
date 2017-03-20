@@ -1,5 +1,8 @@
 # informatik-for-kids
 
+## News
+Currently, the first version of a graphical user interface for kids is being developed.
+
 ## Demonstration and Examples
 Demonstrations and examples can be executed using `gradle`. A (somewhat) stable demonstration can be executed from the `master`-branch (see Main UI).
 
