@@ -2,6 +2,7 @@ package inforkids.ui;
 
 import inforkids.core.graph.impl.BasicLabyrinth;
 import inforkids.core.player.BasicPlayer;
+import inforkids.ui.panels.MainPanel;
 import inforkids.vis.style.ConsoleStyleSheet;
 import microtrafficsim.utils.logging.EasyMarkableLogger;
 
@@ -15,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        EasyMarkableLogger.setEnabledGlobally(true, true, true, true, true);
+        EasyMarkableLogger.setEnabledGlobally(false, true, true, true, true);
 
         guiExample();
     }
@@ -63,7 +64,7 @@ public class Main {
 
             final JScrollPane scroll = new JScrollPane(panel);
 
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setLayout(new BorderLayout());
             frame.add(scroll, BorderLayout.CENTER);
             frame.setSize(300, 300);

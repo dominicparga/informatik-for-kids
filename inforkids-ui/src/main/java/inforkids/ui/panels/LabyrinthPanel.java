@@ -1,11 +1,11 @@
-package inforkids.ui;
+package inforkids.ui.panels;
 
 import inforkids.core.graph.Labyrinth;
 import inforkids.core.graph.impl.BasicLabyrinth;
 import inforkids.vis.VisLabyrinth;
 import inforkids.entities.LabyrinthEntity;
-import inforkids.vis.style.BasicGUIStyleSheet;
-import inforkids.vis.style.GUIStyleSheet;
+import inforkids.vis.style.BasicLabyrinthStyleSheet;
+import inforkids.vis.style.LabyrinthStyleSheet;
 import microtrafficsim.utils.logging.EasyMarkableLogger;
 import org.slf4j.Logger;
 
@@ -20,10 +20,10 @@ public class LabyrinthPanel extends JPanel {
     private LabyrinthEntity entity;
 
 	public LabyrinthPanel() {
-	    this(new BasicGUIStyleSheet());
+	    this(new BasicLabyrinthStyleSheet());
     }
 
-    public LabyrinthPanel(GUIStyleSheet style) {
+    public LabyrinthPanel(LabyrinthStyleSheet style) {
         super(null);
         setBackground(style.getBackgroundColor());
         entity = new LabyrinthEntity();

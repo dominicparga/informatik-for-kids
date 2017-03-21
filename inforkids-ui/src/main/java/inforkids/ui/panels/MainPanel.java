@@ -1,13 +1,13 @@
-package inforkids.ui;
+package inforkids.ui.panels;
 
-import inforkids.vis.style.BasicGUIStyleSheet;
-import inforkids.vis.style.GUIStyleSheet;
+import inforkids.ui.style.FirstStyleSheet;
+import inforkids.ui.style.GUIStyleSheet;
+import inforkids.vis.style.BasicLabyrinthStyleSheet;
+import inforkids.vis.style.LabyrinthStyleSheet;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 /**
  * @author Dominic Parga Cacheiro
@@ -26,11 +26,11 @@ public class MainPanel extends JPanel {
 
 
         /* CENTER */
-        add(new LabyrinthPanel(buildSetup.style), BorderLayout.CENTER);
+        add(new LabyrinthPanel(buildSetup.style.getLabyrinthStyle()), BorderLayout.CENTER);
 
 
         /* EAST */
-        ProgrammingPanel content = new ProgrammingPanel();
+        ProgrammingPanel content = new ProgrammingPanel(buildSetup.style.getProgrammingStyle());
         content.setMinimumSize(new Dimension(1, 1));
         content.setMaximumSize(new Dimension(400, 1));
 
@@ -52,7 +52,7 @@ public class MainPanel extends JPanel {
         public BuildSetup() {
             width = 800;
             height = 480;
-            style = new BasicGUIStyleSheet();
+            style = new FirstStyleSheet();
         }
     }
 }

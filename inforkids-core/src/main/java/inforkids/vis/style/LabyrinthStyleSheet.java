@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * @author Dominic Parga Cacheiro
  */
-public interface GUIStyleSheet {
+public interface LabyrinthStyleSheet {
 
     Image get(Player player);
 

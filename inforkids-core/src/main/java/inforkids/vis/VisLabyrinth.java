@@ -2,7 +2,7 @@ package inforkids.vis;
 
 import inforkids.core.graph.Labyrinth;
 import inforkids.entities.LabyrinthEntity;
-import inforkids.vis.style.GUIStyleSheet;
+import inforkids.vis.style.LabyrinthStyleSheet;
 import microtrafficsim.utils.logging.EasyMarkableLogger;
 import org.slf4j.Logger;
 
@@ -18,9 +18,9 @@ public class VisLabyrinth extends JComponent {
 
 
     private LabyrinthEntity entity;
-    private final GUIStyleSheet style;
+    private final LabyrinthStyleSheet style;
 
-    public VisLabyrinth(LabyrinthEntity entity, GUIStyleSheet style) {
+    public VisLabyrinth(LabyrinthEntity entity, LabyrinthStyleSheet style) {
         this.entity = entity;
         this.style = style;
     }

@@ -11,13 +11,13 @@ import java.awt.image.BufferedImage;
 /**
  * @author Dominic Parga Cacheiro
  */
-public class BasicGUIStyleSheet implements GUIStyleSheet {
+public class BasicLabyrinthStyleSheet implements LabyrinthStyleSheet {
 
     private BufferedImage[][] FIELD_GROUND;
     private Image FIELD_WALL;
     private Image PLAYER;
 
-    public BasicGUIStyleSheet() {
+    public BasicLabyrinthStyleSheet() {
 
         FIELD_GROUND = ImageLoader.loadSprite("/ground.png", 320, 320);
         FIELD_WALL = ImageLoader.loadImage(getClass(), "/wall.png");
