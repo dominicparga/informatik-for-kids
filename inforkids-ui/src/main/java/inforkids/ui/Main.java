@@ -24,6 +24,13 @@ public class Main {
 
     private static void guiExample() {
 
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//        UIManager.put("swing.boldMetal", Boolean.FALSE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         SwingUtilities.invokeLater(() -> {
             JFrame window = new JFrame("Informatik für Kinder");
             window.add(new MainPanel());

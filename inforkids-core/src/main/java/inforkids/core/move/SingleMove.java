@@ -5,8 +5,28 @@ package inforkids.core.move;
  */
 public interface SingleMove extends Move {
 
-    SingleMove LEFT = new SingleMove() {};
-    SingleMove DOWN = new SingleMove() {};
-    SingleMove RIGHT = new SingleMove() {};
-    SingleMove UP = new SingleMove() {};
+    SingleMove LEFT = new SingleMove() {
+        @Override
+        public String toString() {
+            return "←웃";
+        }
+    };
+    SingleMove DOWN = new SingleMove() {
+        @Override
+        public String toString() {
+            return "웃↓";
+        }
+    };
+    SingleMove RIGHT = new SingleMove() {
+        @Override
+        public String toString() {
+            return "웃→";
+        }
+    };
+    SingleMove UP = new SingleMove() {
+        @Override
+        public String toString() {
+            return "웃↑";
+        }
+    };
 }
