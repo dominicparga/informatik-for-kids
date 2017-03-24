@@ -28,10 +28,20 @@ public class VisLabyrinth extends JComponent {
     }
 
 
+    public LabyrinthStyleSheet getStyle() {
+        return style;
+    }
 
 
     public void update(long delta) {
-        style.getPlayerStyle().update(delta);
+
+        Labyrinth labyrinth = labyrinthEntity.getLogic();
+        if (labyrinth == null)
+            return;
+
+        Player player = labyrinth.getPlayer();
+        VisPlayer visPlayer = player.getEntity().getVisualization();
+        visPlayer.update(delta);
     }
 
     @Override
@@ -40,6 +50,10 @@ public class VisLabyrinth extends JComponent {
         super.paintComponent(g);
 
         Labyrinth labyrinth = labyrinthEntity.getLogic();
+        Player player = labyrinth.getPlayer();
+        int playerX = 0;
+        int playerY = 0;
+
         int width = getWidth() / labyrinth.getColumns();
         int height = getHeight() / labyrinth.getRows();
         for (int row = 0; row < labyrinth.getRows(); row++) {
@@ -54,11 +68,16 @@ public class VisLabyrinth extends JComponent {
                 g.drawImage(style.getFieldStyle().get(field), x, y, width, height, null);
 
                 /* draw player */
-                Player player = labyrinth.getPlayer();
                 if (field == player.getField()) {
-                    g.drawImage(style.getPlayerStyle().get(player), x, y, width, height, null);
+                    playerX = x;
+                    playerY = y;
                 }
             }
         }
+
+        VisPlayer visPlayer = player.getEntity().getVisualization();
+        playerX += width * visPlayer.getWalkingXFraction();
+        playerY += height * visPlayer.getWalkingYFraction();
+        g.drawImage(style.getPlayerStyle().get(player), playerX, playerY, width, height, null);
     }
 }

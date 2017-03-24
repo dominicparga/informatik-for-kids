@@ -2,6 +2,7 @@ package inforkids.entities;
 
 import inforkids.core.graph.Field;
 import inforkids.vis.style.BasicFieldStyleSheet;
+import inforkids.vis.style.FieldStyleSheet;
 
 /**
  * @author Dominic Parga Cacheiro
@@ -9,7 +10,7 @@ import inforkids.vis.style.BasicFieldStyleSheet;
 public class FieldEntity {
 
     private Field logic;
-    private BasicFieldStyleSheet visualization;
+    private FieldStyleSheet visualization;
 
 
     public Field getLogic() {
@@ -20,7 +21,7 @@ public class FieldEntity {
         this.logic = logic;
     }
 
-    public BasicFieldStyleSheet getVisualization() {
+    public FieldStyleSheet getVisualization() {
         return visualization;
     }
 

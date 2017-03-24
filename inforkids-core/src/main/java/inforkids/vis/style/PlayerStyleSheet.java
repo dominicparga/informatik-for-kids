@@ -9,7 +9,5 @@ import java.awt.*;
  */
 public interface PlayerStyleSheet {
 
-    void update(long delta);
-
     Image get(Player player);
 }

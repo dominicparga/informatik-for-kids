@@ -3,11 +3,10 @@ package inforkids.ui.panels;
 import inforkids.core.graph.Labyrinth;
 import inforkids.core.graph.impl.BasicLabyrinth;
 import inforkids.core.player.Player;
+import inforkids.vis.GraphicSettings;
 import inforkids.ui.programming.model.CodeLineModel;
 import inforkids.ui.programming.model.InstructionModel;
 import inforkids.ui.programming.model.LoopModel;
-import inforkids.ui.programming.view.CodeLine;
-import inforkids.ui.programming.view.Instruction;
 import inforkids.ui.programming.view.Loop;
 import inforkids.ui.style.FirstStyleSheet;
 import inforkids.ui.style.GUIStyleSheet;
@@ -33,9 +32,6 @@ public class MainPanel extends JPanel {
 
     /* map stuff */
     private final JFileChooser mapfileChooser;
-
-    /* graphic stuff */
-    public static final int FPS = 30;
 
 
     public MainPanel() {
@@ -128,7 +124,7 @@ public class MainPanel extends JPanel {
                 switch (codeLineModel.getType()) {
                     case INSTRUCTION:
                         InstructionModel instruction = (InstructionModel) codeLineModel;
-                        player.walk(instruction.getMove());
+                        player.startWalking(instruction.getMove());
                         lineIdx++;
                         break;
                     case LOOP_START:
@@ -161,11 +157,15 @@ public class MainPanel extends JPanel {
                 codeLineModel.getEntity().getView().setHighlighted(true);
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(GraphicSettings.WALKING_ANIMATION_DURATION);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
+                /* move player */
+                if (player.isWalking())
+                    player.walk(player.getCurrentMove());
+                player.getEntity().getVisualization().update(0);
                 codeLineModel.getEntity().getView().setHighlighted(false);
             }
         });
@@ -204,7 +204,7 @@ public class MainPanel extends JPanel {
                 lastTimeStamp[0] = System.currentTimeMillis();
             }
         };
-        new Timer().schedule(timerTask, 0, 1000 / FPS);
+        new Timer().schedule(timerTask, 0, 1000 / GraphicSettings.FPS);
     }
 
 
