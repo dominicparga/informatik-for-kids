@@ -1,4 +1,4 @@
-package inforkids.ui.programming;
+package inforkids.ui.programming.view;
 
 import inforkids.ui.style.ProgrammingStyleSheet;
 
@@ -8,10 +8,10 @@ import java.awt.*;
 /**
  * @author Dominic Parga Cacheiro
  */
-public class StringCodeLine extends CodeLine {
+public abstract class StringCodeLine extends CodeLine {
 
-    public StringCodeLine(ProgrammingStyleSheet style, Type type, String text) {
-        super(style, type);
+    public StringCodeLine(ProgrammingStyleSheet style, String text) {
+        super(style);
 
         center.setLayout(new BorderLayout());
 

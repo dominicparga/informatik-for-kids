@@ -1,5 +1,6 @@
-package inforkids.ui.programming;
+package inforkids.ui.programming.view;
 
+import inforkids.ui.programming.model.CodeLineModel;
 import inforkids.ui.style.ProgrammingStyleSheet;
 import inforkids.utils.StringUtils;
 
@@ -16,8 +17,6 @@ public abstract class CodeLine extends JPanel {
 
     /* general */
     protected final ProgrammingStyleSheet style;
-    private final Type TYPE;
-    private int lineNumber;
 
     /* components */
     protected final JPanel center;
@@ -30,20 +29,34 @@ public abstract class CodeLine extends JPanel {
     private final JButton buttonMoveDown;
 
 
-    public CodeLine(ProgrammingStyleSheet style, Type type) {
+    public CodeLine(ProgrammingStyleSheet style) {
 
-        super(new BorderLayout());
+        super(new GridBagLayout());
         this.style = style;
-        this.TYPE = type;
-        lineNumber = 0;
         backgrounds = new LinkedList<>();
+
+        GridBagConstraints constraints = new GridBagConstraints();
 
 
         /* add center panel */
         center = new JPanel(null);
         backgrounds.add(center);
 
-        add(center, BorderLayout.CENTER);
+        constraints.fill = GridBagConstraints.VERTICAL;
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.weightx = 0;
+        add(center, constraints);
+
+
+        /* add gap panel */
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridx = 2;
+        constraints.gridy = 0;
+        constraints.weightx = 1;
+        JPanel gap = new JPanel(null);
+        backgrounds.add(gap);
+        add(gap, constraints);
 
 
         /* add west panel */
@@ -61,13 +74,17 @@ public abstract class CodeLine extends JPanel {
         codeLevelPanels.setLayout(new BoxLayout(codeLevelPanels, BoxLayout.X_AXIS));
         westPanel.add(codeLevelPanels);
 
-        add(westPanel, BorderLayout.LINE_START);
+        constraints.fill = GridBagConstraints.VERTICAL;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 0;
+        add(westPanel, constraints);
 
 
-        /* add east panel */
+        /* add east panel with buttons */
         JPanel eastPanel = new JPanel(new GridBagLayout());
         backgrounds.add(eastPanel);
-        GridBagConstraints constraints = new GridBagConstraints();
+        constraints = new GridBagConstraints();
 
         int innervgap = 4; // gap between vertical components
         int outervgap = 12; // gap between vertical components
@@ -95,12 +112,21 @@ public abstract class CodeLine extends JPanel {
         buttonMoveDown = new JButton("▼");
         eastPanel.add(buttonMoveDown, constraints);
 
-        add(eastPanel, BorderLayout.LINE_END);
+
+        constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.VERTICAL;
+        constraints.gridx = 3;
+        constraints.gridy = 0;
+        constraints.weightx = 0;
+        add(eastPanel, constraints);
 
 
         /* set background initially */
         setHighlighted(false);
     }
+
+
+    public abstract CodeLineModel getModel();
 
 
     public void setHighlighted(boolean isHighlighted) {
@@ -113,32 +139,27 @@ public abstract class CodeLine extends JPanel {
         }
     }
 
-    public Type getType() {
-        return TYPE;
-    }
-
-    public int getLineNumber() {
-        return lineNumber;
-    }
-
     public void setLineNumber(int lineNumber, int digits) {
-        this.lineNumber = lineNumber;
+        getModel().setLineNumber(lineNumber);
         numberJLabel.setText(StringUtils.toString(lineNumber, digits) + " ");
-    }
-
-    public int getCodeLevel() {
-        return codeLevelPanels.getComponentCount();
     }
 
     public void setCodeLevel(int codeLevel) {
 
-        while (codeLevelPanels.getComponentCount() > codeLevel) {
+        while (getModel().getCodeLevel() > codeLevel) {
+
+            getModel().decCodeLevel();
+
+
             codeLevelPanels.remove(0);
             codeLevelPanelsBackgrounds.remove(0);
             codeLevelPanelsBackgrounds.remove(0);
         }
 
-        while (codeLevelPanels.getComponentCount() < codeLevel) {
+        while (getModel().getCodeLevel() < codeLevel) {
+
+            getModel().incCodeLevel();
+
 
             JPanel codeLevelPanel = new JPanel(new BorderLayout());
             codeLevelPanel.setPreferredSize(new Dimension(36, 1)); // height doesn't matter due to Layout
@@ -174,10 +195,5 @@ public abstract class CodeLine extends JPanel {
 
     public void addMoveDownListener(ActionListener l) {
         buttonMoveDown.addActionListener(l);
-    }
-
-
-    public enum Type {
-        INSTRUCTION, LOOP_START, LOOP_END
     }
 }

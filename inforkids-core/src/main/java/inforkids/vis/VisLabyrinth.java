@@ -30,8 +30,8 @@ public class VisLabyrinth extends JComponent {
 
 
 
-    public void update() {
-
+    public void update(long delta) {
+        style.getPlayerStyle().update(delta);
     }
 
     @Override

@@ -1,9 +1,8 @@
 package inforkids.ui.panels;
 
 import inforkids.core.graph.Labyrinth;
-import inforkids.core.graph.impl.BasicLabyrinth;
-import inforkids.vis.VisLabyrinth;
 import inforkids.entities.LabyrinthEntity;
+import inforkids.vis.VisLabyrinth;
 import inforkids.vis.style.BasicLabyrinthStyleSheet;
 import inforkids.vis.style.LabyrinthStyleSheet;
 import microtrafficsim.utils.logging.EasyMarkableLogger;
@@ -44,8 +43,8 @@ public class LabyrinthPanel extends JPanel {
     }
 
 
-    public void update() {
-	    entity.getVisualization().update();
+    public void update(long delta) {
+	    entity.getVisualization().update(delta);
     }
 
     @Override

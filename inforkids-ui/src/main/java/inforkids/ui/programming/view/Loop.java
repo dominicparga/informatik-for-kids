@@ -1,6 +1,10 @@
-package inforkids.ui.programming;
+package inforkids.ui.programming.view;
 
 import inforkids.ui.components.CyclingSpinnerNumberModel;
+import inforkids.ui.programming.entities.CodeLineEntity;
+import inforkids.ui.programming.model.CodeLineModel;
+import inforkids.ui.programming.model.InstructionModel;
+import inforkids.ui.programming.model.LoopModel;
 import inforkids.ui.style.ProgrammingStyleSheet;
 
 import javax.swing.*;
@@ -11,21 +15,24 @@ import java.awt.*;
  */
 public class Loop extends CodeLine {
 
-    private final boolean isStart;
+    private final LoopModel model;
     private Loop counterpart;
     private static final Font FONT = new Font("Dialog", Font.PLAIN, 20);
     private JSpinner spinner;
 
 
-    private Loop(ProgrammingStyleSheet style, Type type, boolean isStart) {
-
-        super(style, type);
-        this.isStart = isStart;
+    private Loop(ProgrammingStyleSheet style, CodeLineModel.Type type) {
+        super(style);
+        model = new LoopModel(type);
+        CodeLineEntity<Loop, LoopModel> entity = new CodeLineEntity<>();
+        entity.setView(this);
+        entity.setModel(model);
+        model.setEntity(entity);
     }
 
     public static Loop createStart(ProgrammingStyleSheet style) {
 
-        Loop loop = new Loop(style, Type.LOOP_START, true);
+        Loop loop = new Loop(style, CodeLineModel.Type.LOOP_START);
         loop.center.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -45,6 +52,12 @@ public class Loop extends CodeLine {
         editor.setBackground(style.getBackgroundColor());
         editor.getTextField().setBackground(style.getBackgroundColor());
 
+        loop.spinner.addChangeListener(e -> {
+            JSpinner source = (JSpinner) e.getSource();
+            int value = (int) source.getValue();
+            loop.getModel().setLoopCount(value);
+        });
+
         loop.center.add(loop.spinner);
 
 
@@ -56,7 +69,9 @@ public class Loop extends CodeLine {
 
 
         constraints.weightx = 1;
-        loop.center.add(new JPanel(null), constraints);
+        JPanel gap = new JPanel(null);
+        loop.backgrounds.add(gap);
+        loop.center.add(gap, constraints);
 
 
         return loop;
@@ -64,7 +79,7 @@ public class Loop extends CodeLine {
 
     public static Loop createEnd(ProgrammingStyleSheet style) {
 
-        Loop loop = new Loop(style, Type.LOOP_END, false);
+        Loop loop = new Loop(style, CodeLineModel.Type.LOOP_END);
         loop.center.setLayout(new BorderLayout());
 
 
@@ -92,11 +107,9 @@ public class Loop extends CodeLine {
         this.counterpart = counterpart;
     }
 
-    public boolean isStart() {
-        return isStart;
-    }
 
-    public int getLoopCount() {
-        return (int) spinner.getValue();
+    @Override
+    public LoopModel getModel() {
+        return model;
     }
 }

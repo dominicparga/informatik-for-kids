@@ -3,9 +3,12 @@ package inforkids.ui.panels;
 import inforkids.core.graph.Labyrinth;
 import inforkids.core.graph.impl.BasicLabyrinth;
 import inforkids.core.player.Player;
-import inforkids.ui.programming.CodeLine;
-import inforkids.ui.programming.Instruction;
-import inforkids.ui.programming.Loop;
+import inforkids.ui.programming.model.CodeLineModel;
+import inforkids.ui.programming.model.InstructionModel;
+import inforkids.ui.programming.model.LoopModel;
+import inforkids.ui.programming.view.CodeLine;
+import inforkids.ui.programming.view.Instruction;
+import inforkids.ui.programming.view.Loop;
 import inforkids.ui.style.FirstStyleSheet;
 import inforkids.ui.style.GUIStyleSheet;
 import inforkids.utils.StringUtils;
@@ -14,7 +17,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
-import java.util.Queue;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,7 +35,7 @@ public class MainPanel extends JPanel {
     private final JFileChooser mapfileChooser;
 
     /* graphic stuff */
-    private final int FPS = 30;
+    public static final int FPS = 30;
 
 
     public MainPanel() {
@@ -99,40 +101,47 @@ public class MainPanel extends JPanel {
 
         programmingPanel.nonblockingSingleGUIExecution(() -> {
 
+            /* check if labyrinth is set */
             Labyrinth labyrinth = labyrinthPanel.getLabyrinth();
             if (labyrinth == null)
                 return;
 
+
+            /* reset player position if not on start field */
             Player player = labyrinth.getPlayer();
             if (player.getField() != labyrinth.getStartField()) {
                 player.setField(labyrinth.getStartField());
                 return;
             }
 
-            CodeLine[] code = programmingPanel.getCode();
+
+            /* roll over code */
+            CodeLineModel[] code = programmingPanel.getCode();
             Stack<Integer> loopCounts = new Stack<>();
             Stack<Integer> loopLineStartIndices = new Stack<>();
 
             int lineIdx = 0;
 
             while (lineIdx < code.length) {
-                CodeLine codeLine = code[lineIdx];
+                CodeLineModel codeLineModel = code[lineIdx];
 
-                switch (codeLine.getType()) {
+                switch (codeLineModel.getType()) {
                     case INSTRUCTION:
-                        Instruction instruction = (Instruction) codeLine;
+                        InstructionModel instruction = (InstructionModel) codeLineModel;
                         player.walk(instruction.getMove());
                         lineIdx++;
                         break;
                     case LOOP_START:
-                        Loop loop = (Loop) codeLine;
+                        LoopModel loopModel = (LoopModel) codeLineModel;
+                        Loop loopView = loopModel.getEntity().getView();
+                        LoopModel counterPartModel = loopView.getCounterpart().getModel();
 
-                        if (loop.getLoopCount() == 0) {
+                        if (loopModel.getLoopCount() == 0) {
                             loopCounts.push(0);
                             loopLineStartIndices.push(0);
-                            lineIdx = loop.getCounterpart().getLineNumber() - 1;
+                            lineIdx = counterPartModel.getLineNumber() - 1;
                         } else {
-                            loopCounts.push(loop.getLoopCount());
+                            loopCounts.push(loopModel.getLoopCount());
                             loopLineStartIndices.push(++lineIdx);
                         }
                         break;
@@ -149,7 +158,7 @@ public class MainPanel extends JPanel {
                         break;
                 }
 
-                codeLine.setHighlighted(true);
+                codeLineModel.getEntity().getView().setHighlighted(true);
 
                 try {
                     Thread.sleep(500);
@@ -157,7 +166,7 @@ public class MainPanel extends JPanel {
                     e.printStackTrace();
                 }
 
-                codeLine.setHighlighted(false);
+                codeLineModel.getEntity().getView().setHighlighted(false);
             }
         });
     }
@@ -184,11 +193,15 @@ public class MainPanel extends JPanel {
     */
     private void startGraphicLoop() {
 
+        final long[] lastTimeStamp = { System.currentTimeMillis() };
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                labyrinthPanel.update();
+                long delta = System.currentTimeMillis() - lastTimeStamp[0];
+                labyrinthPanel.update(delta);
                 labyrinthPanel.repaint();
+
+                lastTimeStamp[0] = System.currentTimeMillis();
             }
         };
         new Timer().schedule(timerTask, 0, 1000 / FPS);
@@ -255,13 +268,19 @@ public class MainPanel extends JPanel {
         programmingPanel.setMinimumSize(new Dimension(1, 1));
         programmingPanel.setMaximumSize(new Dimension(480, 1));
 
+
         JScrollPane pane = new JScrollPane(programmingPanel);
         pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        pane.setBorder(style.getBorder());
+//        pane.setBorder(style.getBorder());
         pane.setBackground(style.getBackgroundColor());
         pane.getViewport().setBackground(style.getBackgroundColor());
-        add(pane, BorderLayout.LINE_END);
+
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(pane, BorderLayout.CENTER);
+
+        add(panel, BorderLayout.LINE_END);
     }
 
     public static class BuildSetup {

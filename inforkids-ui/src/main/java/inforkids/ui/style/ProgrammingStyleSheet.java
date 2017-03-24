@@ -1,5 +1,6 @@
 package inforkids.ui.style;
 
+import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -14,4 +15,6 @@ public interface ProgrammingStyleSheet {
     Color getCodeLevelBarColor();
 
     Font getFont();
+
+    Border getBorder();
 }

@@ -40,6 +40,11 @@ public class FirstStyleSheet implements GUIStyleSheet {
             public Font getFont() {
                 return new Font("Courier", Font.BOLD, 20);
             }
+
+            @Override
+            public Border getBorder() {
+                return new LineBorder(Color.BLACK, 6);
+            }
         };
     }
 
@@ -47,11 +52,6 @@ public class FirstStyleSheet implements GUIStyleSheet {
     @Override
     public Color getBackgroundColor() {
         return LABYRINTH.getBackgroundColor();
-    }
-
-    @Override
-    public Border getBorder() {
-        return new LineBorder(Color.BLACK, 6);
     }
 
     @Override

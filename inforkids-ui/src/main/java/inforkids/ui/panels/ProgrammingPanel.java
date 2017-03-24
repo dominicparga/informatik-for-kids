@@ -1,9 +1,11 @@
 package inforkids.ui.panels;
 
 import inforkids.core.move.SingleMove;
-import inforkids.ui.programming.CodeLine;
-import inforkids.ui.programming.Instruction;
-import inforkids.ui.programming.Loop;
+import inforkids.ui.programming.model.CodeLineModel;
+import inforkids.ui.programming.model.InstructionModel;
+import inforkids.ui.programming.view.CodeLine;
+import inforkids.ui.programming.view.Instruction;
+import inforkids.ui.programming.view.Loop;
 import inforkids.ui.style.ProgrammingStyleSheet;
 import inforkids.utils.functional.Procedure;
 import microtrafficsim.math.MathUtils;
@@ -19,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author Dominic Parga Cacheiro
  */
-public class ProgrammingPanel extends JPanel implements Scrollable {
+public class ProgrammingPanel extends JPanel {
 
     public static final Logger logger = new EasyMarkableLogger(ProgrammingPanel.class);
 
@@ -52,22 +54,45 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
         setBackground(style.getBackgroundColor());
 
 
+        /* scroll content */
+        JPanel content = new ScrollablePanel(new BorderLayout());
+        content.setMinimumSize(new Dimension(1, 1));
+        content.setMaximumSize(new Dimension(480, 1));
+
+        /* scroll pane */
+        JScrollPane pane = new JScrollPane(content);
+        pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//        pane.setBorder(style.getBorder());
+        pane.setBackground(style.getBackgroundColor());
+        pane.getViewport().setBackground(style.getBackgroundColor());
+
+        add(pane, BorderLayout.CENTER);
+
+
         /* programming lines */
         panelOfLines = new JPanel(null);
         panelOfLines.setLayout(new BoxLayout(panelOfLines, BoxLayout.Y_AXIS));
         panelOfLines.setBackground(style.getBackgroundColor());
-        add(panelOfLines, BorderLayout.CENTER);
+        content.add(panelOfLines, BorderLayout.CENTER);
+
+
+        /* add gap panel at bottom for nice width */
+        JPanel gap = new JPanel(null);
+        gap.setBackground(style.getBackgroundColor());
+        gap.setPreferredSize(new Dimension(375, 78));
+
+        content.add(gap, BorderLayout.PAGE_END);
 
 
         /* add bottom buttons */
 //        JPanel bottom = new JPanel(new FlowLayout());
-        JPanel bottom = new JPanel(new GridBagLayout());
-        bottom.setBackground(style.getBackgroundColor());
+        JPanel topPanelForButtons = new JPanel(new GridBagLayout());
+        topPanelForButtons.setBackground(style.getBackgroundColor());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = GridBagConstraints.RELATIVE;
         constraints.gridy = 0;
         constraints.insets = new Insets(12, 6, 24, 6);
-
 
         int width = 63;
         int height = 42;
@@ -75,34 +100,34 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
         JButton button = new JButton(SingleMove.LEFT.toString());
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.LEFT)));
-        bottom.add(button, constraints);
+        topPanelForButtons.add(button, constraints);
 
         button = new JButton(SingleMove.UP.toString());
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.UP)));
-        bottom.add(button, constraints);
+        topPanelForButtons.add(button, constraints);
 
         button = new JButton(SingleMove.DOWN.toString());
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.DOWN)));
-        bottom.add(button, constraints);
+        topPanelForButtons.add(button, constraints);
 
         button = new JButton(SingleMove.RIGHT.toString());
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.RIGHT)));
-        bottom.add(button, constraints);
+        topPanelForButtons.add(button, constraints);
 
         button = new JButton("⟲");
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(this::createAndAddLoop));
-        bottom.add(button, constraints);
+        topPanelForButtons.add(button, constraints);
 
         button = new JButton("?");
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(this::createAndAddCondition));
 //        bottom.add(button, constraints);
 
-        add(bottom, BorderLayout.PAGE_END);
+        add(topPanelForButtons, BorderLayout.PAGE_START);
     }
 
     
@@ -114,10 +139,16 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
     /**
      * ATTENTION: This method does NOT blocking the gui, so be careful when using it.
      */
-    public CodeLine[] getCode() {
+    public CodeLineModel[] getCode() {
 
         // todo not concurrent
-        return codeLines.toArray(new CodeLine[0]);
+        CodeLineModel[] deepcopy = new CodeLineModel[codeLines.size()];
+
+        int idx = 0;
+        for (CodeLine codeLine : codeLines)
+            deepcopy[idx++] = codeLine.getModel().deepcopy();
+
+        return deepcopy;
     }
     
 
@@ -161,7 +192,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
     private void removeLoop(Loop loop) {
 
-        if (loop.isStart()) {
+        if (loop.getModel().isStart()) {
             removeCodeLineAndUpdate(loop.getCounterpart());
             removeCodeLineAndUpdate(loop);
         } else {
@@ -194,7 +225,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
     private void removeCodeLine(CodeLine codeLine) {
 
-        int idx = codeLine.getLineNumber() - 1;
+        int idx = codeLine.getModel().getLineNumber() - 1;
 
         codeLines.remove(idx);
 
@@ -212,10 +243,10 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
     private void moveUp(CodeLine bottomCodeLine) {
 
-        if (bottomCodeLine.getLineNumber() == 1)
+        if (bottomCodeLine.getModel().getLineNumber() == 1)
             return;
 
-        int bottomIdx = bottomCodeLine.getLineNumber() - 1;
+        int bottomIdx = bottomCodeLine.getModel().getLineNumber() - 1;
         int topIdx = bottomIdx - 1;
 
         moveDown(codeLines.get(topIdx));
@@ -224,12 +255,12 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
     private void moveDown(CodeLine topCodeLine) {
 
         /* check if top codeline is last codeline */
-        if (topCodeLine.getLineNumber() == codeLines.size())
+        if (topCodeLine.getModel().getLineNumber() == codeLines.size())
             return;
 
 
         /* get swap indices */
-        int topIdx = topCodeLine.getLineNumber() - 1;
+        int topIdx = topCodeLine.getModel().getLineNumber() - 1;
         int bottomIdx = topIdx + 1;
         CodeLine bottomCodeLine = codeLines.get(bottomIdx);
 
@@ -267,20 +298,20 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
 
         /* case 7: both are loop ends */
-        if (!topLoop.isStart() && !bottomLoop.isStart()) {
+        if (!topLoop.getModel().isStart() && !bottomLoop.getModel().isStart()) {
             logger.debug("swap neighbours case 7: both are loop ends");
             return;
         }
 
 
         /* case 6: both are loop starts */
-        if (topLoop.isStart() && bottomLoop.isStart()) {
+        if (topLoop.getModel().isStart() && bottomLoop.getModel().isStart()) {
             logger.debug("swap neighbours case 6: both are loop starts");
             swap(topIdx, bottomIdx);
 
             /* swap counterparts */
-            bottomIdx = topLoop.getCounterpart().getLineNumber() - 1;
-            topIdx = bottomLoop.getCounterpart().getLineNumber() - 1;
+            bottomIdx = topLoop.getCounterpart().getModel().getLineNumber() - 1;
+            topIdx = bottomLoop.getCounterpart().getModel().getLineNumber() - 1;
             swap(topIdx, bottomIdx);
 
             return;
@@ -289,13 +320,13 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
         /* now: one is start and one is end */
         /* case 8 */
-        if (!topLoop.isStart()) {
+        if (!topLoop.getModel().isStart()) {
             logger.debug("swap neighbours case 8: first is loop end");
             swap(topIdx, bottomIdx);
 
             /* swap counterparts */
             topIdx = bottomIdx;
-            bottomIdx = bottomLoop.getCounterpart().getLineNumber() - 1;
+            bottomIdx = bottomLoop.getCounterpart().getModel().getLineNumber() - 1;
             swap(topIdx, bottomIdx);
 
             return;
@@ -308,35 +339,6 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
             return;
         swap(bottomIdx, bottomIdx + 1);
         swap(topIdx, bottomIdx);
-
-
-
-//
-//
-//        /* if top codeline is a loop => "preprocessing" */
-//        CodeLine bottomCodeLine = codeLines.get(bottomIdx);
-//        if (topCodeLine instanceof Loop) {
-//
-//            Loop topLoop = (Loop) topCodeLine;
-//            /* check whether bottom codeline is end of topLoop */
-//            if (topLoop.getCounterpart() == bottomCodeLine) {
-//                int i = bottomIdx;
-//                int j = i + 1;
-//                if (j >= codeLines.size())
-//                    return;
-//
-//                swap(i, j);
-//            }
-//
-//
-//            /* if bottom codeline is a loop as well => swap counterparts */
-//            if (bottomCodeLine instanceof Loop) {
-//                Loop bottomLoop = (Loop) bottomCodeLine;
-//                int i = topLoop.getCounterpart().getLineNumber() - 1;
-//                int j = bottomLoop.getCounterpart().getLineNumber() - 1;
-//                swap(i, j);
-//            }
-//        }
     }
 
     private void swap(int i, int j) {
@@ -375,7 +377,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
             /* go code level back if needed */
             if (codeLine instanceof Loop)
-                if (!((Loop) codeLine).isStart())
+                if (!((Loop) codeLine).getModel().isStart())
                     codeLevel--;
 
             /* set line number */
@@ -386,7 +388,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
             lineNumber++;
             /* go code level forward if needed */
             if (codeLine instanceof Loop)
-                if (((Loop) codeLine).isStart())
+                if (((Loop) codeLine).getModel().isStart())
                     codeLevel++;
         }
     }
@@ -425,37 +427,57 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
     | (i) Scrollable |
     |================|
     */
-    @Override
-    public Dimension getPreferredScrollableViewportSize() {
-        dimension.width = MathUtils.clamp(
-                (int) getPreferredSize().getWidth(),
-                (int) getMinimumSize().getWidth(),
-                (int) getMaximumSize().getWidth());
-        dimension.height = MathUtils.clamp(
-                (int) getPreferredSize().getHeight(),
-                (int) getMinimumSize().getHeight(),
-                (int) getMaximumSize().getHeight()
-        );
-        return dimension;
-    }
+    private class ScrollablePanel extends JPanel implements Scrollable {
 
-    @Override
-    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return 1; // todo play around
-    }
 
-    @Override
-    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return 1; // todo play around
-    }
+        public ScrollablePanel(LayoutManager layout, boolean isDoubleBuffered) {
+            super(layout, isDoubleBuffered);
+        }
 
-    @Override
-    public boolean getScrollableTracksViewportWidth() {
-        return false;
-    }
+        public ScrollablePanel(LayoutManager layout) {
+            super(layout);
+        }
 
-    @Override
-    public boolean getScrollableTracksViewportHeight() {
-        return false;
+        public ScrollablePanel(boolean isDoubleBuffered) {
+            super(isDoubleBuffered);
+        }
+
+        public ScrollablePanel() {
+            super();
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            dimension.width = MathUtils.clamp(
+                    (int) getPreferredSize().getWidth(),
+                    (int) getMinimumSize().getWidth(),
+                    (int) getMaximumSize().getWidth());
+            dimension.height = MathUtils.clamp(
+                    (int) getPreferredSize().getHeight(),
+                    (int) getMinimumSize().getHeight(),
+                    (int) getMaximumSize().getHeight()
+            );
+            return dimension;
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 1; // todo play around
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 1; // todo play around
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return false;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return false;
+        }
     }
 }

@@ -12,8 +12,6 @@ public interface GUIStyleSheet {
 
     Color getBackgroundColor();
 
-    Border getBorder();
-
     LabyrinthStyleSheet getLabyrinthStyle();
 
     ProgrammingStyleSheet getProgrammingStyle();
