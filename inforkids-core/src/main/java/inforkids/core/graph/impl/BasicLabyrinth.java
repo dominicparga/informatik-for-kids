@@ -3,6 +3,8 @@ package inforkids.core.graph.impl;
 import inforkids.core.graph.Direction;
 import inforkids.core.graph.Field;
 import inforkids.core.graph.Labyrinth;
+import inforkids.core.player.BasicPlayer;
+import inforkids.core.player.Player;
 
 import java.util.Iterator;
 
@@ -14,11 +16,16 @@ import java.util.Iterator;
 public class BasicLabyrinth implements Labyrinth {
 
     private final Field[] fields;
+    private Field startField;
+    private final Player player;
     private final int rows;
     private final int columns;
 
 
     public BasicLabyrinth(int rows, int columns) {
+
+        player = new BasicPlayer();
+
 
         fields = new Field[rows * columns];
         this.rows = rows;
@@ -30,6 +37,9 @@ public class BasicLabyrinth implements Labyrinth {
 
     public BasicLabyrinth(int rows, int columns, String fieldStr) {
 
+        player = new BasicPlayer();
+
+
         this.rows = rows;
         this.columns = columns;
         fields = new Field[rows * columns];
@@ -38,12 +48,45 @@ public class BasicLabyrinth implements Labyrinth {
         linkAllFields();
     }
 
+    /**
+     *
+     * @param fieldStr format: "rows,columns,field" (other chars, e.g. spaces, are ignored)
+     */
+    public BasicLabyrinth(String fieldStr) {
+
+        player = new BasicPlayer();
+
+
+        String[] splittedFieldStr = fieldStr.split(",");
+        this.rows = Integer.parseInt(splittedFieldStr[0]);
+        this.columns = Integer.parseInt(splittedFieldStr[1]);
+        fields = new Field[rows * columns];
+
+        fill(splittedFieldStr[2]);
+        linkAllFields();
+    }
+
 
     /*
-    |=============|
-    | (i) Matrix2 |
-    |=============|
+    |===============|
+    | (i) Labyrinth |
+    |===============|
     */
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public Field getStartField() {
+        return startField;
+    }
+
+    /*
+        |=============|
+        | (i) Matrix2 |
+        |=============|
+        */
     @Override
     public int getRows() {
         return rows;
@@ -126,6 +169,11 @@ public class BasicLabyrinth implements Labyrinth {
         for (int row = 1; row < rows - 1; row++)
             for (int column = 1; column < columns - 1; column++)
                 set(row, column, new BasicField(Field.Type.GROUND));
+
+
+        /* set player's start */
+        player.setField(get(1, 1));
+        startField = get(1, 1);
     }
 
     private void fill(String fieldStr) {
@@ -135,15 +183,15 @@ public class BasicLabyrinth implements Labyrinth {
         int idx = 0;
         for (char c : fieldStr.toCharArray()) {
 
-            if (c == Field.GROUND_SYMBOL || c == Field.GOAL_SYMBOL) {
-
+            if (c == Field.GROUND_SYMBOL || c == Field.START_SYMBOL || c == Field.GOAL_SYMBOL) {
                 fields[idx++] = new BasicField(Field.Type.GROUND, c == Field.GOAL_SYMBOL);
 
-            } else if (c == Field.WALL_SYMBOL) {
-
+                if (c == Field.START_SYMBOL) {
+                    startField = fields[idx - 1];
+                    player.setField(startField);
+                }
+            } else if (c == Field.WALL_SYMBOL)
                 fields[idx++] = new BasicField(Field.Type.WALL);
-
-            }
         }
     }
 

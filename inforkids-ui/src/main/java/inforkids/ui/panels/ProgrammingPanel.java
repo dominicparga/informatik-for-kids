@@ -12,8 +12,7 @@ import org.slf4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -33,7 +32,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
     private final JPanel panelOfLines;
     /* user input */
     private ReentrantLock guiLock;
-    private AtomicBoolean isAddingCodeLine;
+    private AtomicBoolean isGUIEnabled;
 
     public ProgrammingPanel(ProgrammingStyleSheet style) {
         super();
@@ -45,7 +44,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
         codeLines = new ArrayList<>();
         /* user input */
         guiLock = new ReentrantLock();
-        isAddingCodeLine = new AtomicBoolean(false);
+        isGUIEnabled = new AtomicBoolean(true);
 
 
         /* own layout */
@@ -62,36 +61,65 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
         /* add bottom buttons */
 //        JPanel bottom = new JPanel(new FlowLayout());
-        JPanel bottom = new JPanel(new GridLayout(1, 6));
+        JPanel bottom = new JPanel(new GridBagLayout());
+        bottom.setBackground(style.getBackgroundColor());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = GridBagConstraints.RELATIVE;
+        constraints.gridy = 0;
+        constraints.insets = new Insets(12, 6, 24, 6);
 
+
+        int width = 63;
+        int height = 42;
 
         JButton button = new JButton(SingleMove.LEFT.toString());
-        button.addActionListener(e -> changeGUI(() -> createAndAddInstruction(SingleMove.LEFT)));
-        bottom.add(button);
+        button.setPreferredSize(new Dimension(width, height));
+        button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.LEFT)));
+        bottom.add(button, constraints);
 
         button = new JButton(SingleMove.UP.toString());
-        button.addActionListener(e -> changeGUI(() -> createAndAddInstruction(SingleMove.UP)));
-        bottom.add(button);
+        button.setPreferredSize(new Dimension(width, height));
+        button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.UP)));
+        bottom.add(button, constraints);
 
         button = new JButton(SingleMove.DOWN.toString());
-        button.addActionListener(e -> changeGUI(() -> createAndAddInstruction(SingleMove.DOWN)));
-        bottom.add(button);
+        button.setPreferredSize(new Dimension(width, height));
+        button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.DOWN)));
+        bottom.add(button, constraints);
 
         button = new JButton(SingleMove.RIGHT.toString());
-        button.addActionListener(e -> changeGUI(() -> createAndAddInstruction(SingleMove.RIGHT)));
-        bottom.add(button);
+        button.setPreferredSize(new Dimension(width, height));
+        button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.RIGHT)));
+        bottom.add(button, constraints);
 
         button = new JButton("⟲");
-        button.addActionListener(e -> changeGUI(this::createAndAddLoop));
-        bottom.add(button);
+        button.setPreferredSize(new Dimension(width, height));
+        button.addActionListener(e -> nonblockingSingleGUIExecution(this::createAndAddLoop));
+        bottom.add(button, constraints);
 
         button = new JButton("?");
-        button.addActionListener(e -> changeGUI(this::createAndAddCondition));
-        bottom.add(button);
+        button.setPreferredSize(new Dimension(width, height));
+        button.addActionListener(e -> nonblockingSingleGUIExecution(this::createAndAddCondition));
+//        bottom.add(button, constraints);
 
         add(bottom, BorderLayout.PAGE_END);
     }
 
+    
+    /*
+    |=========================|
+    | utils for outer queries |
+    |=========================|
+    */
+    /**
+     * ATTENTION: This method does NOT blocking the gui, so be careful when using it.
+     */
+    public CodeLine[] getCode() {
+
+        // todo not concurrent
+        return codeLines.toArray(new CodeLine[0]);
+    }
+    
 
     /*
     |===============================|
@@ -102,8 +130,9 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
 
         /* prepare new instruction */
         Instruction instruction = new Instruction(style, move);
-        instruction.addDeleteListener(e -> changeGUI(() -> removeCodeLineAndUpdate(instruction)));
-        instruction.addMoveDownListener(e -> changeGUI(() -> swapNeighborsAndUpdate(instruction)));
+        instruction.addDeleteListener(e -> nonblockingSingleGUIExecution(() -> removeCodeLineAndUpdate(instruction)));
+        instruction.addMoveUpListener(e -> nonblockingSingleGUIExecution(() -> moveUpAndUpdate(instruction)));
+        instruction.addMoveDownListener(e -> nonblockingSingleGUIExecution(() -> moveDownAndUpdate(instruction)));
 
         /* add new instruction */
         addCodeLineAndUpdate(instruction);
@@ -117,10 +146,12 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
         start.setCounterpart(end);
         end.setCounterpart(start);
 
-        start.addDeleteListener(e -> changeGUI(() -> removeLoop(start)));
-        end.addDeleteListener(e -> changeGUI(() -> removeLoop(end)));
-        start.addMoveDownListener(e -> changeGUI(() -> swapNeighborsAndUpdate(start)));
-        end.addMoveDownListener(e -> changeGUI(() -> swapNeighborsAndUpdate(end)));
+        start.addDeleteListener(e -> nonblockingSingleGUIExecution(() -> removeLoop(start)));
+        end.addDeleteListener(e -> nonblockingSingleGUIExecution(() -> removeLoop(end)));
+        start.addMoveUpListener(e -> nonblockingSingleGUIExecution(() -> moveUpAndUpdate(start)));
+        end.addMoveUpListener(e -> nonblockingSingleGUIExecution(() -> moveUpAndUpdate(end)));
+        start.addMoveDownListener(e -> nonblockingSingleGUIExecution(() -> moveDownAndUpdate(start)));
+        end.addMoveDownListener(e -> nonblockingSingleGUIExecution(() -> moveDownAndUpdate(end)));
 
 
         /* add new loop */
@@ -140,7 +171,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
     }
 
     private void createAndAddCondition() {
-
+        // todo
     }
 
 
@@ -151,7 +182,7 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
     */
     private void addCodeLine(CodeLine codeLine) {
         panelOfLines.add(codeLine);
-        panelOfLines.add(Box.createRigidArea(new Dimension(1, 3))); // width doesn't matter due to vertical BoxLayout
+        panelOfLines.add(Box.createRigidArea(new Dimension(1, 0))); // width doesn't matter due to vertical BoxLayout
         codeLines.add(codeLine);
     }
 
@@ -179,7 +210,18 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
         getRootPane().revalidate();
     }
 
-    private void swapNeighbors(CodeLine topCodeLine) {
+    private void moveUp(CodeLine bottomCodeLine) {
+
+        if (bottomCodeLine.getLineNumber() == 1)
+            return;
+
+        int bottomIdx = bottomCodeLine.getLineNumber() - 1;
+        int topIdx = bottomIdx - 1;
+
+        moveDown(codeLines.get(topIdx));
+    }
+
+    private void moveDown(CodeLine topCodeLine) {
 
         /* check if top codeline is last codeline */
         if (topCodeLine.getLineNumber() == codeLines.size())
@@ -306,9 +348,18 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
         panelOfLines.add(codeLines.get(j), 2 * j); // twice due to gap panels
     }
 
-    private void swapNeighborsAndUpdate(CodeLine topCodeLine) {
+    private void moveUpAndUpdate(CodeLine bottomCodeLine) {
 
-        swapNeighbors(topCodeLine);
+        moveUp(bottomCodeLine);
+
+        updateLineNumbers();
+        getRootPane().revalidate();
+
+    }
+
+    private void moveDownAndUpdate(CodeLine topCodeLine) {
+
+        moveDown(topCodeLine);
 
         updateLineNumbers();
         getRootPane().revalidate();
@@ -345,15 +396,22 @@ public class ProgrammingPanel extends JPanel implements Scrollable {
     | utils multithreading |
     |======================|
     */
-    private void changeGUI(Procedure procedure) {
+    public void setGUIEnabled(boolean isGUIEnabled) {
+        guiLock.lock();
+        // todo deadlock if buttons are pressed with circa speed of light
+        this.isGUIEnabled.set(isGUIEnabled);
+        guiLock.unlock();
+    }
+
+    public void nonblockingSingleGUIExecution(Procedure procedure) {
         if (guiLock.tryLock()) {
 
-            if (isAddingCodeLine.compareAndSet(false, true)) {
+            if (isGUIEnabled.compareAndSet(true, false)) {
                 new Thread(() -> {
 
                     procedure.invoke();
 
-                    isAddingCodeLine.set(false);
+                    isGUIEnabled.set(true);
                 }).start();
             }
 

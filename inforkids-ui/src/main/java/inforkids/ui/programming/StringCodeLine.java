@@ -10,8 +10,8 @@ import java.awt.*;
  */
 public class StringCodeLine extends CodeLine {
 
-    public StringCodeLine(ProgrammingStyleSheet style, String text) {
-        super(style);
+    public StringCodeLine(ProgrammingStyleSheet style, Type type, String text) {
+        super(style, type);
 
         center.setLayout(new BorderLayout());
 

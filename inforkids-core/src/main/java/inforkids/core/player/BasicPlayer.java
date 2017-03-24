@@ -14,17 +14,27 @@ import java.util.ArrayList;
 public class BasicPlayer implements Player {
 
     private Field field;
-    private Random random;
+    private final Random random;
 
 
     public BasicPlayer(long seed, Field startField) {
-        random = new Random(seed);
+        this();
+        random.setSeed(seed);
         field = startField;
     }
 
     public BasicPlayer(Field startField) {
-        random = new Random();
+        this();
         field = startField;
+    }
+
+    public BasicPlayer(long seed) {
+        this();
+        random.setSeed(seed);
+    }
+
+    public BasicPlayer() {
+        random = new Random();
     }
 
 
@@ -36,6 +46,11 @@ public class BasicPlayer implements Player {
     @Override
     public Field getField() {
         return field;
+    }
+
+    @Override
+    public void setField(Field field) {
+        this.field = field;
     }
 
     @Override

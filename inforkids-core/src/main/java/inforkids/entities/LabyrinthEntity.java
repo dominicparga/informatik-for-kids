@@ -1,6 +1,7 @@
 package inforkids.entities;
 
 import inforkids.core.graph.Labyrinth;
+import inforkids.core.player.Player;
 import inforkids.vis.VisLabyrinth;
 
 /**

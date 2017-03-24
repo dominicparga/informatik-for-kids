@@ -3,6 +3,8 @@ package inforkids.ui.style;
 import inforkids.vis.style.BasicLabyrinthStyleSheet;
 import inforkids.vis.style.LabyrinthStyleSheet;
 
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**
@@ -14,11 +16,24 @@ public class FirstStyleSheet implements GUIStyleSheet {
     public final ProgrammingStyleSheet PROGRAMMING;
 
     public FirstStyleSheet() {
+
+        final FirstStyleSheet tmp = this;
+
         LABYRINTH = new BasicLabyrinthStyleSheet();
         PROGRAMMING = new ProgrammingStyleSheet() {
             @Override
             public Color getBackgroundColor() {
-                return Color.PINK;
+                return tmp.getBackgroundColor();
+            }
+
+            @Override
+            public Color getHighlightedBackgroundColor() {
+                return new Color(0, 160, 0);
+            }
+
+            @Override
+            public Color getCodeLevelBarColor() {
+                return Color.BLACK;
             }
 
             @Override
@@ -32,6 +47,11 @@ public class FirstStyleSheet implements GUIStyleSheet {
     @Override
     public Color getBackgroundColor() {
         return LABYRINTH.getBackgroundColor();
+    }
+
+    @Override
+    public Border getBorder() {
+        return new LineBorder(Color.BLACK, 6);
     }
 
     @Override

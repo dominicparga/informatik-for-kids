@@ -2,6 +2,7 @@ package inforkids.ui.style;
 
 import inforkids.vis.style.LabyrinthStyleSheet;
 
+import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -10,6 +11,8 @@ import java.awt.*;
 public interface GUIStyleSheet {
 
     Color getBackgroundColor();
+
+    Border getBorder();
 
     LabyrinthStyleSheet getLabyrinthStyle();
 

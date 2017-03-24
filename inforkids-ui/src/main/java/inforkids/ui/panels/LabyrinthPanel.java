@@ -27,12 +27,25 @@ public class LabyrinthPanel extends JPanel {
         super(null);
         setBackground(style.getBackgroundColor());
         entity = new LabyrinthEntity();
-        Labyrinth logic = new BasicLabyrinth(5, 6, "WWWWWW WGGGWW WGGGGW WGWWGW WWWWWW");
         VisLabyrinth visualization = new VisLabyrinth(entity, style);
-        entity.setLogic(logic);
         entity.setVisualization(visualization);
 
         add(visualization);
+    }
+
+
+    public Labyrinth getLabyrinth() {
+	    return entity.getLogic();
+    }
+
+    public void setLabyrinth(Labyrinth labyrinth) {
+        entity.setLogic(labyrinth);
+        repaint();
+    }
+
+
+    public void update() {
+	    entity.getVisualization().update();
     }
 
     @Override
@@ -40,13 +53,18 @@ public class LabyrinthPanel extends JPanel {
         logger.trace(getClass().getSimpleName() + ".paintComponent");
         super.paintComponent(g);
 
+
+        Labyrinth labyrinth = entity.getLogic();
+        if (labyrinth == null)
+            return;
+
         /* size */
         // width per field
-        int width = Math.min(getWidth() / entity.getLogic().getColumns(), getHeight() / entity.getLogic().getRows());
+        int width = Math.min(getWidth() / labyrinth.getColumns(), getHeight() / labyrinth.getRows());
         // total height
-        int height = width * entity.getLogic().getRows();
+        int height = width * labyrinth.getRows();
         // total width
-        width *= entity.getLogic().getColumns();
+        width *= labyrinth.getColumns();
 
         /* location */
         int x = getWidth() / 2 - width / 2;

@@ -14,23 +14,23 @@ public class Loop extends CodeLine {
     private final boolean isStart;
     private Loop counterpart;
     private static final Font FONT = new Font("Dialog", Font.PLAIN, 20);
-    private static int ID = 0;
+    private JSpinner spinner;
 
 
-    private Loop(ProgrammingStyleSheet style, boolean isStart) {
+    private Loop(ProgrammingStyleSheet style, Type type, boolean isStart) {
 
-        super(style);
+        super(style, type);
         this.isStart = isStart;
     }
 
     public static Loop createStart(ProgrammingStyleSheet style) {
 
-        Loop loop = new Loop(style, true);
+        Loop loop = new Loop(style, Type.LOOP_START, true);
         loop.center.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
 
-        JLabel label = new JLabel(ID + "Wiederhole ");
+        JLabel label = new JLabel("Wiederhole ");
         label.setFont(FONT);
         label.setForeground(Color.BLACK);
 
@@ -38,13 +38,17 @@ public class Loop extends CodeLine {
         loop.center.add(label, constraints);
 
 
-        JSpinner spinner = new JSpinner(new CyclingSpinnerNumberModel(0, 0, 42, 1));
-        ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setEditable(false);
+        loop.spinner = new JSpinner(new CyclingSpinnerNumberModel(0, 0, 42, 1));
+        JSpinner.DefaultEditor editor = ((JSpinner.DefaultEditor) loop.spinner.getEditor());
+        loop.spinner.setBorder(null);
+        editor.getTextField().setEditable(false);
+        editor.setBackground(style.getBackgroundColor());
+        editor.getTextField().setBackground(style.getBackgroundColor());
 
-        loop.center.add(spinner);
+        loop.center.add(loop.spinner);
 
 
-        label = new JLabel(" Mal [");
+        label = new JLabel(" Mal (    ");
         label.setFont(FONT);
         label.setForeground(Color.BLACK);
 
@@ -60,18 +64,20 @@ public class Loop extends CodeLine {
 
     public static Loop createEnd(ProgrammingStyleSheet style) {
 
-        Loop loop = new Loop(style, false);
+        Loop loop = new Loop(style, Type.LOOP_END, false);
         loop.center.setLayout(new BorderLayout());
 
 
-        JLabel label = new JLabel((ID++) + "]");
+        JLabel label = new JLabel(")");
         label.setFont(FONT);
         label.setForeground(Color.BLACK);
 
         loop.center.add(label, BorderLayout.LINE_START);
 
 
-        loop.center.add(new JPanel(null), BorderLayout.CENTER);
+        JPanel gap = new JPanel(null);
+        loop.backgrounds.add(gap);
+        loop.center.add(gap, BorderLayout.CENTER);
 
 
         return loop;
@@ -88,5 +94,9 @@ public class Loop extends CodeLine {
 
     public boolean isStart() {
         return isStart;
+    }
+
+    public int getLoopCount() {
+        return (int) spinner.getValue();
     }
 }

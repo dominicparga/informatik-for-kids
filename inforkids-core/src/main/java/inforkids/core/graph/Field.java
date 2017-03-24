@@ -34,4 +34,5 @@ public interface Field {
     char WALL_SYMBOL = 'W';
     char GROUND_SYMBOL = 'G';
     char GOAL_SYMBOL = '*';
+    char START_SYMBOL = 'S';
 }

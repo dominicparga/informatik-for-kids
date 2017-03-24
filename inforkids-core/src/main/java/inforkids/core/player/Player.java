@@ -11,6 +11,8 @@ public interface Player {
 
     Field getField();
 
+    void setField(Field field);
+
     /**
      * @return If walk was successful. Not successful means e.g. field in direction is a wall
      */

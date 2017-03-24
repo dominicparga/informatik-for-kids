@@ -9,5 +9,9 @@ public interface ProgrammingStyleSheet {
 
     Color getBackgroundColor();
 
+    Color getHighlightedBackgroundColor();
+
+    Color getCodeLevelBarColor();
+
     Font getFont();
 }

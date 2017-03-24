@@ -8,7 +8,16 @@ import inforkids.ui.style.ProgrammingStyleSheet;
  */
 public class Instruction extends StringCodeLine {
 
+    private SingleMove move;
+
     public Instruction(ProgrammingStyleSheet style, SingleMove move) {
-        super(style, move.toString());
+        super(style, Type.INSTRUCTION, move.toString());
+
+        this.move = move;
+    }
+
+
+    public SingleMove getMove() {
+        return move;
     }
 }

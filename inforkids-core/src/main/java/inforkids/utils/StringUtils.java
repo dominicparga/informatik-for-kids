@@ -1,5 +1,11 @@
 package inforkids.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 /**
  * @author Dominic Parga Cacheiro
  */
@@ -35,5 +41,19 @@ public class StringUtils {
             prefixBuilder.append(" ");
 
         return prefixBuilder.append(builder).toString();
+    }
+
+    public static String readFile(String path, Charset encoding) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
+
+    public static String readFile(File file, Charset encoding) throws IOException {
+        byte[] encoded = Files.readAllBytes(file.toPath());
+        return new String(encoded, encoding);
+    }
+
+    public static String readFile(File file) throws IOException {
+        return readFile(file, Charset.defaultCharset());
     }
 }

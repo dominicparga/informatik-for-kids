@@ -13,7 +13,18 @@ run {
 }
 
 
-mainClassName = "inforkids.ui.Main"   // TODO
+mainClassName = "inforkids.ui.Main"
+jar {
+    manifest {
+        attributes "Main-Class": "$mainClassName"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+
 
 
 

@@ -10,9 +10,9 @@ import java.awt.*;
  */
 public interface LabyrinthStyleSheet {
 
-    Image get(Player player);
+    PlayerStyleSheet getPlayerStyle();
 
-    Image get(Field field);
+    FieldStyleSheet getFieldStyle();
 
     Color getBackgroundColor();
 }
