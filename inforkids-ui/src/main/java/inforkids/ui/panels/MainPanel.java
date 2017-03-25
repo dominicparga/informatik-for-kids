@@ -16,6 +16,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,7 +49,7 @@ public class MainPanel extends JPanel {
 
             @Override
             public String getDescription() {
-                return ".labyrinth";
+                return ".txt";
             }
 
             @Override
@@ -67,7 +68,7 @@ public class MainPanel extends JPanel {
                 if (extension == null) return false;
 
                 switch (extension) {
-                    case "labyrinth": return true;
+                    case "txt": return true;
                     default:    return false;
                 }
             }
@@ -179,7 +180,9 @@ public class MainPanel extends JPanel {
                 try {
                     String fieldStr = StringUtils.readFile(file);
                     labyrinthPanel.setLabyrinth(new BasicLabyrinth(fieldStr));
-                } catch (Exception exception) {}
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }).start());

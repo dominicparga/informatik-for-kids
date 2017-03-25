@@ -46,8 +46,7 @@ public class Main {
 
     private static void consoleExample() {
 
-//        Labyrinth labyrinth = new Labyrinth(5, 5);
-        BasicLabyrinth labyrinth = new BasicLabyrinth(5, 5, "WWWWW WGGGW W*WGW WGGGW WWWWW");
+        BasicLabyrinth labyrinth = new BasicLabyrinth("WWWWW,WGGGW,W*WGW,WGGGW,WWWWW");
         BasicPlayer player = new BasicPlayer(labyrinth.get(3, 2));
 
         ConsoleStyleSheet styleSheet = new ConsoleStyleSheet();

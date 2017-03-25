@@ -80,11 +80,11 @@ public class LabyrinthPanel extends JPanel {
 
         /* size */
         // width per field
-        int width = Math.min(getWidth() / labyrinth.getColumns(), getHeight() / labyrinth.getRows());
+        int width = Math.min(getWidth() / labyrinth.getColumnCount(), getHeight() / labyrinth.getRowCount());
         // total height
-        int height = width * labyrinth.getRows();
+        int height = width * labyrinth.getRowCount();
         // total width
-        width *= labyrinth.getColumns();
+        width *= labyrinth.getColumnCount();
 
         /* location */
         int x = getWidth() / 2 - width / 2;

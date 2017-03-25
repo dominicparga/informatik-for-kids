@@ -18,7 +18,7 @@ public class ConsoleStyleSheet implements StringStyleSheet {
             System.out.println(field);
             builder.append(get(field));
 
-            if (++k % labyrinth.getColumns() == 0)
+            if (++k % labyrinth.getColumnCount() == 0)
                 builder.append("\n");
         }
 
@@ -36,7 +36,7 @@ public class ConsoleStyleSheet implements StringStyleSheet {
             else
                 builder.append(get(field));
 
-            if (++k % labyrinth.getColumns() == 0)
+            if (++k % labyrinth.getColumnCount() == 0)
                 builder.append("\n");
         }
 

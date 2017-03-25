@@ -5,9 +5,9 @@ package inforkids.utils;
  */
 public interface Matrix2<E> extends Iterable<E> {
 
-    int getRows();
+    int getRowCount();
 
-    int getColumns();
+    int getColumnCount();
 
     E get(int row, int column);
 

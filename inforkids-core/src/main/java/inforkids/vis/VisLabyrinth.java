@@ -54,13 +54,15 @@ public class VisLabyrinth extends JComponent {
         int playerX = 0;
         int playerY = 0;
 
-        int width = getWidth() / labyrinth.getColumns();
-        int height = getHeight() / labyrinth.getRows();
-        for (int row = 0; row < labyrinth.getRows(); row++) {
-            for (int column = 0; column < labyrinth.getColumns(); column++) {
+        int width = getWidth() / labyrinth.getColumnCount();
+        int height = getHeight() / labyrinth.getRowCount();
+        for (int row = 0; row < labyrinth.getRowCount(); row++) {
+            for (int column = 0; column < labyrinth.getColumnCount(); column++) {
 
                 /* get field */
                 Field field = labyrinth.get(row, column);
+                if (field == null)
+                    continue;
 
                 /* draw field */
                 int x = column * width;

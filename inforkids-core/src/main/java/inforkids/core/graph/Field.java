@@ -31,8 +31,10 @@ public interface Field {
 
 
     enum Type { WALL, GROUND }
-    char WALL_SYMBOL = 'W';
-    char GROUND_SYMBOL = 'G';
+    char WALL_SYMBOL = 'w';
+    char GROUND_SYMBOL = 'g';
     char GOAL_SYMBOL = '*';
-    char START_SYMBOL = 'S';
+    char START_SYMBOL = 's';
+    char EMPTY_SYMBOL = ',';
+    char ROW_SEPARATOR = ';';
 }

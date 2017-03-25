@@ -6,6 +6,7 @@ import inforkids.core.graph.Labyrinth;
 import inforkids.core.player.BasicPlayer;
 import inforkids.core.player.Player;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -15,36 +16,49 @@ import java.util.Iterator;
  */
 public class BasicLabyrinth implements Labyrinth {
 
-    private final Field[] fields;
+    private final HashMap<Integer, HashMap<Integer, Field>> fields;
     private Field startField;
     private final Player player;
-    private final int rows;
-    private final int columns;
+    private int rows;
+    private int columns;
 
 
     public BasicLabyrinth(int rows, int columns) {
 
         player = new BasicPlayer();
+        fields = new HashMap<>(rows);
 
+        StringBuilder builder = new StringBuilder();
+        /* fill middle rows with one wall, grounds and one wall */
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
 
-        fields = new Field[rows * columns];
-        this.rows = rows;
-        this.columns = columns;
+                boolean isWall = false;
 
-        fillEmpy();
-        linkAllFields();
-    }
+                /* first row */
+                isWall = row == 0
+                        /* last row */
+                        || row == rows - 1
+                        /* first column */
+                        || column == 0
+                        /* last column */
+                        || column == columns - 1;
 
-    public BasicLabyrinth(int rows, int columns, String fieldStr) {
+                if (isWall)
+                    builder.append(Field.WALL_SYMBOL);
+                else {
+                    if (row == 1 && column == 1)
+                        builder.append(Field.GOAL_SYMBOL);
+                    else if (row == rows - 2 && column == columns - 2)
+                        builder.append(Field.START_SYMBOL);
+                    else
+                        builder.append(Field.GROUND_SYMBOL);
+                }
+            }
+            builder.append(Field.ROW_SEPARATOR);
+        }
 
-        player = new BasicPlayer();
-
-
-        this.rows = rows;
-        this.columns = columns;
-        fields = new Field[rows * columns];
-
-        fill(fieldStr);
+        fill(builder.toString());
         linkAllFields();
     }
 
@@ -55,14 +69,9 @@ public class BasicLabyrinth implements Labyrinth {
     public BasicLabyrinth(String fieldStr) {
 
         player = new BasicPlayer();
+        fields = new HashMap<>();
 
-
-        String[] splittedFieldStr = fieldStr.split(",");
-        this.rows = Integer.parseInt(splittedFieldStr[0]);
-        this.columns = Integer.parseInt(splittedFieldStr[1]);
-        fields = new Field[rows * columns];
-
-        fill(splittedFieldStr[2]);
+        fill(fieldStr);
         linkAllFields();
     }
 
@@ -88,44 +97,37 @@ public class BasicLabyrinth implements Labyrinth {
         |=============|
         */
     @Override
-    public int getRows() {
+    public int getRowCount() {
         return rows;
     }
 
     @Override
-    public int getColumns() {
+    public int getColumnCount() {
         return columns;
     }
 
     @Override
     public Field get(int row, int column) {
         if (isInputCorrect(row, column))
-            return fields[row * columns + column];
+            return getRow(row).get(column);
         else
             return null;
     }
 
     @Override
     public void set(int row, int column, Field field) {
-        fields[row * columns + column] = field;
+        if (isInputCorrect(row, column))
+            getRow(row).put(column, field);
+        else
+            throw new IllegalArgumentException();
     }
 
+    /**
+     * @return An iterator over all fields; empty fields are returned as {@code null} object.
+     */
     @Override
     public Iterator<Field> iterator() {
-        return new Iterator<Field>() {
-
-            int idx = 0;
-
-            @Override
-            public boolean hasNext() {
-                return idx < fields.length;
-            }
-
-            @Override
-            public Field next() {
-                return fields[idx++];
-            }
-        };
+        return new FieldIterator(this);
     }
 
     /*
@@ -150,49 +152,59 @@ public class BasicLabyrinth implements Labyrinth {
         return true;
     }
 
-    private void fillEmpy() {
+    private HashMap<Integer, Field> getRow(int row) {
 
-        /* fill borders with walls */
-        for (int row = 0; row < rows; row++) {
-            set(row, 0, new BasicField(Field.Type.WALL));
-            set(row, columns - 1, new BasicField(Field.Type.WALL));
+        HashMap<Integer, Field> rowFields = fields.get(row);
+
+        if (rowFields == null) {
+            rowFields = new HashMap<>(columns);
+            fields.put(row, rowFields);
         }
 
-        /* fill borders with walls */
-        for (int column = 0; column < columns; column++) {
-            set(0, column, new BasicField(Field.Type.WALL));
-            set(rows - 1, column, new BasicField(Field.Type.WALL));
-        }
-
-
-        /* fill inner fields with grounds */
-        for (int row = 1; row < rows - 1; row++)
-            for (int column = 1; column < columns - 1; column++)
-                set(row, column, new BasicField(Field.Type.GROUND));
-
-
-        /* set player's start */
-        player.setField(get(1, 1));
-        startField = get(1, 1);
+        return rowFields;
     }
 
     private void fill(String fieldStr) {
 
         fieldStr = fieldStr.trim();
+        fieldStr = fieldStr.toLowerCase();
 
-        int idx = 0;
-        for (char c : fieldStr.toCharArray()) {
+        String[] lines = fieldStr.split("" + Field.ROW_SEPARATOR);
 
-            if (c == Field.GROUND_SYMBOL || c == Field.START_SYMBOL || c == Field.GOAL_SYMBOL) {
-                fields[idx++] = new BasicField(Field.Type.GROUND, c == Field.GOAL_SYMBOL);
+        int row = 0;
+        for (String line : lines) {
 
-                if (c == Field.START_SYMBOL) {
-                    startField = fields[idx - 1];
-                    player.setField(startField);
+            boolean rowHasField = false;
+
+            int column = 0;
+            for (char c : line.toCharArray()) {
+
+                if (c == Field.GROUND_SYMBOL || c == Field.START_SYMBOL || c == Field.GOAL_SYMBOL) {
+                    Field field = new BasicField(Field.Type.GROUND, c == Field.GOAL_SYMBOL);
+                    getRow(row).put(column++, field);
+
+                    if (c == Field.START_SYMBOL) {
+                        startField = field;
+                        player.setField(startField);
+                    }
+
+                    rowHasField = true;
+                } else if (c == Field.WALL_SYMBOL) {
+                    Field field = new BasicField(Field.Type.WALL);
+                    getRow(row).put(column++, field);
+                    rowHasField = true;
+                } else if (c == Field.EMPTY_SYMBOL) {
+                    column++;
+                    rowHasField = true;
                 }
-            } else if (c == Field.WALL_SYMBOL)
-                fields[idx++] = new BasicField(Field.Type.WALL);
+            }
+
+            columns = Math.max(columns, column);
+            if (rowHasField)
+                row++;
         }
+
+        rows = row;
     }
 
     /**
@@ -203,6 +215,9 @@ public class BasicLabyrinth implements Labyrinth {
             for (int column = 0; column < columns; column++) {
 
                 Field field = get(row, column);
+                if (field == null)
+                    continue;
+
                 if (field.getType() != Field.Type.WALL) {
 
                     Field current;
@@ -233,5 +248,38 @@ public class BasicLabyrinth implements Labyrinth {
                 }
             }
         }
+    }
+
+
+    private class FieldIterator implements Iterator<Field> {
+
+        private int row;
+        private int column;
+        private Labyrinth labyrinth;
+
+        public FieldIterator(Labyrinth labyrinth) {
+            row = 0;
+            column = 0;
+            this.labyrinth = labyrinth;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return row < rows && column < columns;
+        }
+
+        @Override
+        public Field next() {
+
+            Field field = labyrinth.get(row, column++);
+
+            if (column == labyrinth.getColumnCount()) {
+                row++;
+                column = 0;
+            }
+
+            return field;
+        }
+
     }
 }
