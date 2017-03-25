@@ -102,6 +102,11 @@ public class ProgrammingPanel extends JPanel {
         button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.LEFT)));
         topPanelForButtons.add(button, constraints);
 
+        button = new JButton(SingleMove.RIGHT.toString());
+        button.setPreferredSize(new Dimension(width, height));
+        button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.RIGHT)));
+        topPanelForButtons.add(button, constraints);
+
         button = new JButton(SingleMove.UP.toString());
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.UP)));
@@ -110,11 +115,6 @@ public class ProgrammingPanel extends JPanel {
         button = new JButton(SingleMove.DOWN.toString());
         button.setPreferredSize(new Dimension(width, height));
         button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.DOWN)));
-        topPanelForButtons.add(button, constraints);
-
-        button = new JButton(SingleMove.RIGHT.toString());
-        button.setPreferredSize(new Dimension(width, height));
-        button.addActionListener(e -> nonblockingSingleGUIExecution(() -> createAndAddInstruction(SingleMove.RIGHT)));
         topPanelForButtons.add(button, constraints);
 
         button = new JButton("⟲");
