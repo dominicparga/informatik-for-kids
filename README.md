@@ -1,12 +1,25 @@
 # informatik-for-kids
 
+![Teaser: informatik-for-kids](teaser.png "informatik-for-kids")
+
 ## Downloads
-[You can download the software here.](https://github.com/dominicparga/informatik-for-kids/raw/master/inforkids_course_material/informatik-for-kids.jar) Have fun :)
+Die Kursmaterialien finden sich [hier auf Dropbox](https://www.dropbox.com/sh/ugxfb8vwrf0w6id/AAA1F_lzIdWqhoX-0BC4tQUja?dl=0) und werden in Zukunft aktualisiert. Viel Spaß damit! :)
 
-[You can find other course materials here.](https://github.com/dominicparga/informatik-for-kids/raw/master/inforkids_course_material)
+## Wichtige Informationen zur Verwendung des Programms
+Die Software ist das .jar-File und kann per Doppelklick gestartet werden (falls Java auf dem Rechner installiert ist). Im Ordner `Karten` befinden sich die 4 Beispiel-Karten aus dem Kurs. Ich habe sie ein wenig angepasst, damit die Erstellung neuer Karten einfacher wird:
+* Eine Karte ist jetzt ein normales txt-File (zum Beispiel `Karte_0.txt`).
+* Man muss nicht mehr die Zeilen und Spalten zählen! :)
+* Es ist egal, ob man die Buchstaben groß oder klein schreibt. Man kann also für eine Wand zum Beispiel 'w' anstatt "W" schreiben.
+* Man darf nur einen Start haben, aber es darf mehrere Ziele geben.
 
-## News
-Currently, the first version of a graphical user interface for kids is being developed.
+#### Symbole
+* `w` für eine Wand (Englisch "wall")
+* `g` für Boden (Englisch "ground")
+* `s` für Start (English "start")
+* `*` für ein Ziel
+* `;` ist das Ende einer Zeile
+* `,` ist eine Lücke. Hier ist gar kein Feld und das Labyrinth wird hier nachher leer sein.
+* Alle anderen Zeichen werden vom Programm ignoriert.
 
 ## Demonstration and Examples
 Demonstrations and examples can be executed using `gradle`. A (somewhat) stable demonstration can be executed from the `master`-branch (see Main UI).
