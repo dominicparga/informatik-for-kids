@@ -1,5 +1,8 @@
 # informatik-for-kids
 
+## Downloads
+[You can download the software here.](https://github.com/dominicparga/informatik-for-kids/raw/master/informatik-for-kids.jar) Have fun :)
+
 ## News
 Currently, the first version of a graphical user interface for kids is being developed.
 
