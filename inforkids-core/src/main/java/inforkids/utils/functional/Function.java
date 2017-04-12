@@ -1,7 +1,7 @@
 package inforkids.utils.functional;
 
 /**
- * Created by Dominic on 21.03.17.
+ * @author Dominic Parga Cacheiro
  */
 public interface Function<R> {
 
