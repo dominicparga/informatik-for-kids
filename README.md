@@ -6,7 +6,7 @@
 Die Kursmaterialien finden sich [hier auf Dropbox](https://www.dropbox.com/sh/ugxfb8vwrf0w6id/AAA1F_lzIdWqhoX-0BC4tQUja?dl=0) und werden in Zukunft aktualisiert. Die letzte Aktualisierung war am Samstag, den 25.03.2017. Viel Spaß damit! :)
 
 ## Wichtige Informationen zur Verwendung des Programms
-Die Software ist das .jar-File und kann per Doppelklick gestartet werden (falls Java auf dem Rechner installiert ist). Im Ordner `Karten` befinden sich die 4 Beispiel-Karten aus dem Kurs. Ich habe sie ein wenig angepasst, damit die Erstellung neuer Karten einfacher wird:
+Die Software ist das .jar-File und kann per Doppelklick gestartet werden (falls Java auf dem Rechner installiert ist; falls nicht, finden sich weitere Informationen [im Wiki](https://github.com/dominicparga/informatik-for-kids/wiki/Hinweise-zur-Java-Installation)). Im Ordner `Karten` befinden sich die 4 Beispiel-Karten aus dem Kurs. Ich habe sie ein wenig angepasst, damit die Erstellung neuer Karten einfacher wird:
 * Eine Karte ist jetzt ein normales txt-File (zum Beispiel `Karte_0.txt`).
 * Man muss nicht mehr die Zeilen und Spalten zählen! :)
 * Es ist egal, ob man die Buchstaben groß oder klein schreibt. Man kann also für eine Wand zum Beispiel 'w' anstatt "W" schreiben.
