@@ -1,5 +1,7 @@
 # informatik-for-kids
 
+![Teaser: informatik-for-kids](README_images/teaser.png "informatik-for-kids")
+
 ## Downloads
 Die Kursmaterialien finden sich [hier auf Dropbox](https://www.dropbox.com/sh/ugxfb8vwrf0w6id/AAA1F_lzIdWqhoX-0BC4tQUja?dl=0) und werden in Zukunft aktualisiert. Die letzte Aktualisierung war am Samstag, den 25.03.2017. Viel Spaß damit! :)
 
