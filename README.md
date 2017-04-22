@@ -28,8 +28,8 @@ Für das Manövrieren habe ich dieses Bild gemacht:
 ![choose_map_explanation](README_images/choose_map_explanation.png "choose_map_explanation")
 
 
-| Buchstabe |             Bedeutung           |
-|:---------:|:--------------------------------|
+| Buchstabe |             Bedeutung          |
+|:---------:|--------------------------------|
 |    `A`    | anderen Ordner auswählen |
 |    `B`    | eine Ordnerebene nach oben gehen (also das Gegenteil von Doppelklicken auf einen Ordner, einfach mal draufklicken :) ) |
 |    `C`    | in den Benutzerordner des Computers wechseln; hier kommt man schnell zum Desktop oder zu den eigenen Dateien |
