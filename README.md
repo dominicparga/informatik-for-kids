@@ -21,6 +21,21 @@ Die Software ist das .jar-File und kann per Doppelklick gestartet werden (falls 
 * `,` ist eine Lücke. Hier ist gar kein Feld und das Labyrinth wird hier nachher leer sein.
 * Alle anderen Zeichen werden vom Programm ignoriert.
 
+#### Wie lädt man eine neue Karte?
+Wenn man auf `Neue Karte laden` drückt, dann öffnet sich ein Fenster, wo man die neue Karte suchen kann. Das nennt sich auf englisch "file chooser", was auf deutsch sowas heißt wie "Datei-Auswahl". Der Vorteil davon ist, dass man alle Dateien auf dem Computer angezeigt bekommt. Man kann die neue Karte also überall auf dem Computer hinlegen (zB auch auf den Desktop) und im `FileChooser` muss man nur noch da hin manövrieren. :)
+
+Für das Manövrieren habe ich dieses Bild gemacht:
+![choose_map_explanation](README_images/choose_map_explanation.png "choose_map_explanation")
+
+
+| Buchstabe |             Bedeutung           |
+|:---------:|:--------------------------------|
+|    `A`    | anderen Ordner auswählen |
+|    `B`    | eine Ordnerebene nach oben gehen (also das Gegenteil von Doppelklicken auf einen Ordner, einfach mal draufklicken :) ) |
+|    `C`    | in den Benutzerordner des Computers wechseln; hier kommt man schnell zum Desktop oder zu den eigenen Dateien |
+|    `D`    | neuen Ordner im aktuellen Ordner erstellen |
+|    `E`    | diese beiden Knöpfe sind nur für die Darstellung des aktuellen Ordners; einfach das anklicken, was einem besser gefällt :) |
+
 ## Aktuelle Mitarbeiter
 
 **Dominic Parga Cacheiro**  
