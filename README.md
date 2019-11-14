@@ -2,6 +2,11 @@
 
 ![Teaser: informatik-for-kids](README_images/teaser.png "informatik-for-kids")
 
+## News
+
+Future-Dominic wants to re-implement this little project, so it is available easier, e.g. through a browser.
+Let's see where this is going.
+
 ## Downloads
 Die Kursmaterialien finden sich [hier auf Dropbox](https://www.dropbox.com/sh/ugxfb8vwrf0w6id/AAA1F_lzIdWqhoX-0BC4tQUja?dl=0) und werden in Zukunft aktualisiert. Die letzte Aktualisierung war am Samstag, den 25.03.2017. Viel Spaß damit! :)
 
